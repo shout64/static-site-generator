@@ -15,12 +15,18 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         if node.text_type != TextType.TEXT:
             new_nodes.append(node)
             continue
+        split_nodes = []
         sections = node.text.split(delimiter)
         if len(sections) % 2 == 0:
             raise ValueError("Invalid Markdown: Missing/No delimiters found.")
-        new_nodes.append(TextNode(text=sections[0], text_type=TextType.TEXT))
-        new_nodes.append(TextNode(text=sections[1], text_type=text_type))
-        new_nodes.append(TextNode(text=sections[2], text_type=TextType.TEXT))
+        for i in range(len(sections)):
+            if sections[i] == "":
+                continue
+            if i % 2 == 0:
+                split_nodes.append(TextNode(sections[i], TextType.TEXT))
+            else:
+                split_nodes.append(TextNode(sections[i], text_type))
+        new_nodes.extend(split_nodes)
 
     return new_nodes
 
@@ -77,25 +83,10 @@ def split_nodes_link(old_nodes):
     return new_nodes
 
 def text_to_textnodes(text):
-    pass
-
-
-
-"""
-This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)
-
-It should output this list of nodes:
-[
-    TextNode("This is ", TextType.TEXT),
-    TextNode("text", TextType.BOLD),
-    TextNode(" with an ", TextType.TEXT),
-    TextNode("italic", TextType.ITALIC),
-    TextNode(" word and a ", TextType.TEXT),
-    TextNode("code block", TextType.CODE),
-    TextNode(" and an ", TextType.TEXT),
-    TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
-    TextNode(" and a ", TextType.TEXT),
-    TextNode("link", TextType.LINK, "https://boot.dev"),
-]
-
-"""
+    full_node = [TextNode(text, TextType.TEXT)]
+    new_nodes = split_nodes_delimiter(full_node, "`", TextType.CODE)
+    new_nodes = split_nodes_link(new_nodes)
+    new_nodes = split_nodes_image(new_nodes)
+    new_nodes = split_nodes_delimiter(new_nodes, "**", TextType.BOLD)
+    new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
+    return new_nodes   

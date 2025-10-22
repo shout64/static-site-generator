@@ -83,5 +83,36 @@ class TestSplitLinkImages(unittest.TestCase):
             new_nodes,
         )
 
+class TestTextToTextNode(unittest.TestCase):
+    def test_basic_case(self):
+        input_text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        result     = text_to_textnodes(input_text)
+        test_case  = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ]
+        self.assertListEqual(result, test_case)
+
+
+    def test_complex_text(self):
+        input_text = "Here's [a link](https://sproutsocial.com/careers/open-positions/7279227/?gh_src=fe8bf1621us) to a _Software Engineering_ job opportunity!"
+        result     = text_to_textnodes(input_text)
+        test_case  = [
+            TextNode("Here's ", TextType.TEXT),
+            TextNode("a link", TextType.LINK, "https://sproutsocial.com/careers/open-positions/7279227/?gh_src=fe8bf1621us"),
+            TextNode(" to a ", TextType.TEXT),
+            TextNode("Software Engineering", TextType.ITALIC),
+            TextNode(" job opportunity!", TextType.TEXT)
+        ]
+        self.assertListEqual(result, test_case)
+
 if __name__ == "__main__":
     unittest.main()
