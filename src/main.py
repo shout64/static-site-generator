@@ -2,12 +2,17 @@ from block_markdown import *
 from textnode       import *
 from htmlnode       import *
 import shutil
+import sys
 import os
 
+if len(sys.argv) > 1:
+    basepath = sys.argv[1]
+else:
+    basepath = "/"
 
 def main():
-    copy_static_to_public("static", "public")
-    generate_pages_recursive("content", "template.html", "public")
+    copy_static_to_public("static", "docs")
+    generate_pages_recursive("content", "template.html", "docs")
 
 def copy_static_to_public(src, dst):
     cwd         = os.getcwd()
@@ -58,6 +63,8 @@ def generate_page(from_path, template_path, dest_path):
 
     new_html = template_content.replace("{{ Title }}", title)
     new_html = new_html.replace("{{ Content }}", html)
+    new_html = new_html.replace("href=\"/", f"href=\"{basepath}")
+    new_html = new_html.replace("src=\"/", f"src=\"{basepath}")
 
     directory = os.path.dirname(dest_path)
     if directory:
