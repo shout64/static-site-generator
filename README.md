@@ -19,7 +19,7 @@ Part of the ![Boot.Dev curriculum](https://www.boot.dev?bannerlord=shout64), thi
     - Set Source to "Deploy from a branch".
     - Set your branch to "main" (or whatever your main branch is) and set folder to "/docs" and click Save.
   - You should now be able to see your website live at https://YOUR-USERNAME.github.io/YOUR-REPO/ (there should be a link at the top of the screen).
-  - To make changes to your site, just update your files in the Content folder, run build.sh and push your changes up to your repo.
+  - To make changes to your site, just update your files in the Content and Static folders, run build.sh and push your changes up to your repo.
  
 ## Demo
 You can see the demo of the site used in the Boot.Dev course here: ![Demo Website](https://shout64.github.io/static-site-generator/)
